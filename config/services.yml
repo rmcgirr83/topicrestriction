@@ -1,0 +1,11 @@
+services:
+    rmcgirr83.topicrestriction.listener:
+        class: rmcgirr83\topicrestriction\event\listener
+        arguments:
+            - @auth
+            - @template
+            - @user
+            - %core.root_path%
+            - %core.php_ext%
+        tags:
+            - { name: event.listener }
