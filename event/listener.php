@@ -84,7 +84,7 @@ class listener implements EventSubscriberInterface
 		if (!$this->check_auth($forum_id))
 		{
 			$this->user->add_lang_ext('rmcgirr83/topicrestriction', 'common');
-			
+
 			$link = append_sid("{$this->root_path}viewforum.$this->php_ext", "f=$forum_id");
 			meta_refresh(3, $link);
 			trigger_error('TOPIC_VIEW_NOTICE');
