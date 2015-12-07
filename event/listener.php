@@ -54,6 +54,7 @@ class listener implements EventSubscriberInterface
 			'core.permissions'					=> 'add_permission',
 			'core.viewtopic_before_f_read_check'	=> 'viewtopic_before_f_read_check',
 			'core.viewforum_get_topic_data'		=> 'modify_template_vars',
+			'core.search_modify_param_before'	=> 'search_modify_param_before',
 		);
 	}
 
@@ -92,7 +93,7 @@ class listener implements EventSubscriberInterface
 	}
 
 	/**
-	* Show a message if can't post without approval
+	* Show a message if can't view topics
 	*
 	* @param object $event The event object
 	* @return null
@@ -106,6 +107,25 @@ class listener implements EventSubscriberInterface
 			$this->user->add_lang_ext('rmcgirr83/topicrestriction', 'common');
 			$this->template->assign_var('S_CAN_VIEW_TOPICS', true);
 		}
+	}
+
+	/**
+	* Modify search params to exclude forum ids
+	*
+	* @param object $event The event object
+	* @return null
+	* @access public
+	*/
+	public function search_modify_param_before($event)
+	{
+		$ex_fid_ary = $event['ex_fid_ary'];
+
+		$forum_ids = $this->auth->acl_getf('!f_topic_view', true);
+		if (sizeof($forum_ids))
+		{
+			$ex_fid_ary = array_unique(array_merge(array_keys($forum_ids), $ex_fid_ary));
+		}
+		$event['ex_fid_ary'] = $ex_fid_ary;
 	}
 
 	/**
