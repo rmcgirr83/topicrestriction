@@ -51,10 +51,12 @@ class listener implements EventSubscriberInterface
 	static public function getSubscribedEvents()
 	{
 		return array(
-			'core.permissions'					=> 'add_permission',
-			'core.viewtopic_before_f_read_check'	=> 'viewtopic_before_f_read_check',
-			'core.viewforum_get_topic_data'		=> 'modify_template_vars',
-			'core.search_modify_param_before'	=> 'search_modify_param_before',
+			'core.permissions'						=> 'add_permission',
+			'core.viewtopic_before_f_read_check'	=> 'forum_id_check',
+			'core.viewforum_get_topic_data'			=> 'modify_template_vars',
+			'core.search_modify_param_before'		=> 'search_modify_param_before',
+			'core.ucp_pm_compose_quotepost_query_after'	=> 'ucp_pm_compose_quotepost_query_after',
+			'core.modify_posting_auth'				=> 'forum_id_check',
 		);
 	}
 
@@ -79,17 +81,10 @@ class listener implements EventSubscriberInterface
 	* @return null
 	* @access public
 	*/
-	public function viewtopic_before_f_read_check($event)
+	public function forum_id_check($event)
 	{
 		$forum_id = $event['forum_id'];
-		if (!$this->check_auth($forum_id))
-		{
-			$this->user->add_lang_ext('rmcgirr83/topicrestriction', 'common');
-
-			$link = append_sid("{$this->root_path}viewforum.$this->php_ext", "f=$forum_id");
-			meta_refresh(3, $link);
-			trigger_error('TOPIC_VIEW_NOTICE');
-		}
+		$this->check_auth($forum_id);
 	}
 
 	/**
@@ -101,8 +96,7 @@ class listener implements EventSubscriberInterface
 	*/
 	public function modify_template_vars($event)
 	{
-		$forum_id = $event['forum_id'];
-		if (!$this->check_auth($forum_id))
+		if (!$this->auth->acl_get('f_topic_view', $event['forum_id']))
 		{
 			$this->user->add_lang_ext('rmcgirr83/topicrestriction', 'common');
 			$this->template->assign_var('S_CAN_VIEW_TOPICS', true);
@@ -129,20 +123,35 @@ class listener implements EventSubscriberInterface
 	}
 
 	/**
+	* Check for permission to quote posts in a PM
+	*
+	* @param object $event The event object
+	* @return null
+	* @access public
+	*/
+	public function ucp_pm_compose_quotepost_query_after($event)
+	{
+		$forum_id = $event['post']['forum_id'];
+		$this->check_auth($forum_id);
+	}
+
+	/**
 	* User/group can view topics in forum
 	*
 	* @param object $forum_id The id of the forum
-	* @return approval true if can false if not
+	* @return message
 	* @access private
 	*/
 	private function check_auth($forum_id)
 	{
-		$can_view_topics = true;
 		if (!$this->auth->acl_get('f_topic_view', $forum_id))
 		{
-			$can_view_topics = false;
+			$this->user->add_lang_ext('rmcgirr83/topicrestriction', 'common');
+
+			$link = append_sid("{$this->root_path}viewforum.$this->php_ext", "f=$forum_id");
+			meta_refresh(3, $link);
+			trigger_error('TOPIC_VIEW_NOTICE');
 		}
-		return $can_view_topics;
 	}
 
 }
