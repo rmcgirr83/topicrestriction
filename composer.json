@@ -1,13 +1,12 @@
 {
     "name": "rmcgirr83/topicrestriction",
     "type": "phpbb-extension",
-    "description": "Adds a new forum permission which can send new topics to moderation.  Once enabled you must set which forums, under the Misc tab of the forum, you want to restrict viewing of the topics.",
+    "description": "phpBB 3.1 extension which adds a new forum permission to restrict access to viewing topics to certain groups and forums.",
     "version": "1.0.0",
     "time": "2015-12-06",
     "keywords": [
         "phpbb",
         "extension",
-        "profile",
         "communication"
     ],
     "license": "GPL-2.0",
@@ -21,13 +20,10 @@
     "require": {
         "php": ">=5.3.3"
     },
-    "require-dev": {
-        "phpbb/epv": "dev-master"
-    },
     "extra": {
         "display-name": "Topic Restriction",
         "soft-require": {
-            "phpbb/phpbb": ">=3.1.0,<3.3.*@dev"
+            "phpbb/phpbb": ">=3.1.0,<3.3.*"
         }
     }
 }
