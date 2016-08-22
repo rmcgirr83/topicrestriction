@@ -38,5 +38,5 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'TOPIC_VIEW_NOTICE'		=> 'You do not have access to the posts in this forum.',
+	'TOPIC_VIEW_NOTICE'		=> 'You do not have access to the topics in this forum.',
 ));
