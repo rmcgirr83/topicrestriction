@@ -10,6 +10,10 @@
 
 namespace rmcgirr83\topicrestriction\event;
 
+/* ignore */
+use phpbb\auth\auth;
+use phpbb\language\language;
+use phpbb\template\template;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -20,11 +24,11 @@ class listener implements EventSubscriberInterface
 	/** @var \phpbb\auth\auth */
 	protected $auth;
 
+	/** @var \phpbb\language\language */
+	protected $language;
+
 	/** @var \phpbb\template\template */
 	protected $template;
-
-	/** @var \phpbb\user */
-	protected $user;
 
 	/** @var string phpBB root path */
 	protected $root_path;
@@ -32,11 +36,16 @@ class listener implements EventSubscriberInterface
 	/** @var string phpEx */
 	protected $php_ext;
 
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\template\template $template, \phpbb\user $user, $root_path, $php_ext)
+	public function __construct(
+		auth $auth, 
+		language $language,
+		template $template, 
+		$root_path, 
+		$php_ext)
 	{
 		$this->auth = $auth;
+		$this->language = $language;
 		$this->template = $template;
-		$this->user = $user;
 		$this->root_path = $root_path;
 		$this->php_ext = $php_ext;
 	}
@@ -51,6 +60,7 @@ class listener implements EventSubscriberInterface
 	static public function getSubscribedEvents()
 	{
 		return array(
+			'core.user_setup'						=> 'user_setup',
 			'core.permissions'						=> 'add_permission',
 			'core.viewtopic_before_f_read_check'	=> 'forum_id_check',
 			'core.viewforum_get_topic_data'			=> 'modify_template_vars',
@@ -58,6 +68,18 @@ class listener implements EventSubscriberInterface
 			'core.ucp_pm_compose_quotepost_query_after'	=> 'ucp_pm_compose_quotepost_query_after',
 			'core.modify_posting_auth'				=> 'forum_id_check',
 		);
+	}
+
+	/**
+	* Add lang vars
+	*
+	* @param object $event The event object
+	* @return null
+	* @access public
+	*/
+	public function user_setup($event)
+	{
+		$this->language->add_lang('common', 'rmcgirr83/topicrestriction');
 	}
 
 	/**
@@ -98,7 +120,6 @@ class listener implements EventSubscriberInterface
 	{
 		if (!$this->auth->acl_get('f_topic_view', $event['forum_id']))
 		{
-			$this->user->add_lang_ext('rmcgirr83/topicrestriction', 'common');
 			$this->template->assign_var('S_CAN_VIEW_TOPICS', true);
 		}
 	}
@@ -146,8 +167,6 @@ class listener implements EventSubscriberInterface
 	{
 		if (!$this->auth->acl_get('f_topic_view', $forum_id))
 		{
-			$this->user->add_lang_ext('rmcgirr83/topicrestriction', 'common');
-
 			$link = append_sid("{$this->root_path}viewforum.$this->php_ext", "f=$forum_id");
 			meta_refresh(3, $link);
 			trigger_error('TOPIC_VIEW_NOTICE');

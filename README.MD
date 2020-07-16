@@ -1,10 +1,10 @@
-phpBB-3.1-Topic-Restriction
+Topic Restriction
 =========================
 
-phpBB 3.1 extension which adds a new forum permission to restrict access to viewing topics to certain groups and forums.  Once enabled you must set which forums for which groups, under the group permissions of the forum, you want to restrict viewing of the topics.  Users will still be able to see the topic titles but not access the topic itself.
+phpBB extension which adds a new forum permission to restrict access to viewing topics to certain groups and forums.  Once enabled you must set which forums for which groups, under the group permissions of the forum, you want to restrict viewing of the topics.  Users will still be able to see the topic titles but not access the topic itself.
 
 
-[![Build Status](https://travis-ci.org/rmcgirr83/phpBB-3.1-Topic-Restriction.svg?branch=master)](https://travis-ci.org/rmcgirr83/phpBB-3.1-Topic-Restriction)
+[![Build Status](https://travis-ci.org/rmcgirr83/topicrestriction.svg?branch=master)](https://travis-ci.org/rmcgirr83/topicrestriction)
 ## Installation
 
 ### 1. clone
@@ -12,7 +12,7 @@ Clone (or download and move) the repository into the folder ext/rmcgirr83/topicr
 
 ```
 cd phpBB3
-git clone https://github.com/rmcgirr83/phpBB-3.1-Topic-Restriction.git ext/rmcgirr83/topicrestriction/
+git clone https://github.com/rmcgirr83/topicrestriction.git ext/rmcgirr83/topicrestriction/
 ```
 
 ### 2. activate
