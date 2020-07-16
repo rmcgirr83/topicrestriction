@@ -37,10 +37,10 @@ class listener implements EventSubscriberInterface
 	protected $php_ext;
 
 	public function __construct(
-		auth $auth, 
+		auth $auth,
 		language $language,
-		template $template, 
-		$root_path, 
+		template $template,
+		$root_path,
 		$php_ext)
 	{
 		$this->auth = $auth;
