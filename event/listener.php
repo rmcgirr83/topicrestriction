@@ -92,7 +92,7 @@ class listener implements EventSubscriberInterface
 	public function add_permission($event)
 	{
 		$permissions = $event['permissions'];
-		$permissions['f_topic_view'] = array('lang' => 'ACL_F_TOPIC_VIEW', 'cat' => 'misc');
+		$permissions['f_topic_view'] = array('lang' => 'ACL_F_TOPIC_VIEW', 'cat' => 'actions');
 		$event['permissions'] = $permissions;
 	}
 
@@ -120,7 +120,13 @@ class listener implements EventSubscriberInterface
 	{
 		if (!$this->auth->acl_get('f_topic_view', $event['forum_id']))
 		{
-			$this->template->assign_var('S_CAN_VIEW_TOPICS', true);
+			$redirect = '&amp;redirect=' . urlencode(str_replace('&amp;', '&', build_url(array('_f_'))));
+			$link = append_sid("{$this->root_path}ucp.$this->php_ext", 'mode=login' . $redirect);
+			$this->template->assign_vars([
+				'S_CAN_VIEW_TOPICS' => true,
+				'L_TOPIC_VIEW_NOTICE' => $this->language->lang('TOPIC_VIEW_NOTICE', '<a href="' . $link . '">', '</a>'),
+			]);
+
 		}
 	}
 
@@ -168,8 +174,10 @@ class listener implements EventSubscriberInterface
 		if (!$this->auth->acl_get('f_topic_view', $forum_id))
 		{
 			$link = append_sid("{$this->root_path}viewforum.$this->php_ext", "f=$forum_id");
-			meta_refresh(3, $link);
-			trigger_error('TOPIC_VIEW_NOTICE');
+			meta_refresh(10, $link);
+			$redirect = '&amp;redirect=' . urlencode(str_replace('&amp;', '&', build_url(array('_f_'))));
+			$link = append_sid("{$this->root_path}ucp.$this->php_ext", 'mode=login' . $redirect);
+			trigger_error($this->language->lang('TOPIC_VIEW_NOTICE', '<a href="' . $link . '">', '</a>'));
 		}
 	}
 
