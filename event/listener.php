@@ -10,9 +10,6 @@
 
 namespace rmcgirr83\topicrestriction\event;
 
-/**
-* @ignore
-*/
 use phpbb\auth\auth;
 use phpbb\language\language;
 use phpbb\template\template;
